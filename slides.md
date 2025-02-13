@@ -62,15 +62,6 @@ kinrone JavaScript API(事件)
 - 🛠 **app.record.create.change.<欄位代碼>**
 - 🛠 **app.record.create.submit** 紀錄新增按鈕觸發
 
-<v-click>
-
-```js
-// 範例 ...
-kintone.events.on('app.record.create.submit', (event) => {
-  // 要做的事情 ...
-})
-```
-</v-click>
 
 <div class="abs-br m-6 text-xl">
   <a href="https://cybozu.dev/zh-tw/id/9744d83c79ac1b73e5cab2c7/#記錄清單畫面" target="_blank" class="slidev-icon-btn">
@@ -86,6 +77,41 @@ code {
 
 ---
 
+## 事件的 event
+
+
+
+```js
+kintone.events.on('app.record.index.show', (event) => {
+  console.log(event)
+})
+```
+
+<v-click>
+```js
+{
+  "type": "app.record.index.show",
+  "appId": 193,
+  "viewType": "list",
+  "viewId": 20,
+  "viewName": "（全部）",
+  "records": [],
+  "offset": 0,
+  "size": 4,
+  "date": null
+}
+```
+</v-click>
+
+<style>
+code {
+  font-size: 20px;
+}
+</style>
+
+
+---
+
 ## 較常使用的 kintone JavaScript API
 
 kinrone JavaScript API(方法)
@@ -95,6 +121,7 @@ kinrone JavaScript API(方法)
 - 🛠 **kintone.app.record.get** - 取得當前紀錄
 - 🛠 **kintone.app.record.set** - 設定當前紀錄
 - 🛠 **kintone.getLoginUser** - 取得登入者資料
+- 🛠 **kintone.app.getHeaderSpaceElement** - 取得 header 的 DOM
 
 <v-click>
 
@@ -115,6 +142,33 @@ const RECORD_ID = kintone.app.record.get()
 <style>
 code {
   font-size: 20px;
+}
+</style>
+
+---
+
+## 範例：新增一個按鈕
+
+```js
+kintone.events.on('app.record.index.show', () => {
+  // 取得 DOM
+  const el = kintone.app.getHeaderMenuSpaceElement()
+  // 建立 button 並 append
+  const button = document.createElement('button')
+  button.textContent = '按鈕'
+  el.appendChild(button)
+})
+```
+
+<v-click>
+
+![](https://i.imgur.com/ka8qKUU.png)
+
+</v-click>
+
+<style>
+code {
+  font-size: 18px;
 }
 </style>
 
@@ -148,12 +202,21 @@ code {
 | 「更新」單個記錄     | `PUT`     | /k/v1/record.json     |
 
 ```js
-(async () => {
-  const response = await fetch('/k/v1/records.json', {
-    // ....
+kintone.events.on('app.record.index.show', async () => {
+  const response = await fetch('/k/v1/record.json?app=193&id=1', {
+    headers: {
+      'X-Cybozu-API-Token': 'Kgzg2TvnRvMLMve3ppd4abIKPKZoprADAKve04OI'
+    }
   })
-})()
+})
 ```
+
+<style>
+code {
+  font-size: 18px;
+}
+</style>
+
 
 ---
 
@@ -185,6 +248,24 @@ code {
 
 即跨域，使用 Proxy 避開 CORS
 
+```mermaid
+sequenceDiagram
+    participant Kintone
+    participant ProxyServer
+    participant TargetServer
+
+    Kintone ->> ProxyServer: Request (API Call)
+    ProxyServer ->> TargetServer: Forward Request
+    TargetServer ->> ProxyServer: Response Data
+    ProxyServer ->> Kintone: Return Response
+```
+
+---
+
+## kintone.proxy 語法 
+
+`response` 返回 `[body, status, headers]`
+
 ```js
 try {
   const [body, status, headers] = await kintone.proxy(
@@ -207,12 +288,26 @@ try {
   </a>
 </div>
 
-
 <style>
 code {
   font-size: 18px;
 }
 </style>
+
+<!-- 發送至 `https://dog.ceo/dog-api/` -->
+
+<!-- ```js
+kintone.events.on('app.record.index.show', async () => {
+  const [body, status, headers] = await kintone.proxy(
+    'https://dog.ceo/api/breeds/image/random',
+    'GET',
+    {},
+    {}
+  )
+
+  console.log(JSON.parse(body))
+})
+``` -->
 
 ---
 
