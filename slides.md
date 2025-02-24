@@ -26,7 +26,7 @@ src: ./pages/intro.md
 
 ---
 
-## kintone JavaScript API
+## kintone JavaScript API（事件）
 
 事件
 
@@ -78,8 +78,6 @@ code {
 ---
 
 ## 事件的 event
-
-
 
 ```js
 kintone.events.on('app.record.index.show', (event) => {
@@ -217,7 +215,6 @@ code {
 }
 </style>
 
-
 ---
 
 ## 調用 API 的權限
@@ -244,27 +241,27 @@ code {
 
 ---
 
-## 呼叫外部 API
+## kintone 外部串接（Proxy）
 
 即跨域，使用 Proxy 避開 CORS
 
 ```mermaid
 sequenceDiagram
-    participant Kintone
+    participant kintone
     participant ProxyServer
     participant TargetServer
 
-    Kintone ->> ProxyServer: Request (API Call)
+    kintone ->> ProxyServer: Request (API Call)
     ProxyServer ->> TargetServer: Forward Request
     TargetServer ->> ProxyServer: Response Data
-    ProxyServer ->> Kintone: Return Response
+    ProxyServer ->> kintone: Return Response
 ```
 
 ---
 
 ## kintone.proxy 語法 
 
-`response` 返回 `[body, status, headers]`
+使用 `kintone.proxy`，`response` 返回 `[body, status, headers]`
 
 ```js
 try {
@@ -294,20 +291,91 @@ code {
 }
 </style>
 
-<!-- 發送至 `https://dog.ceo/dog-api/` -->
+---
 
-<!-- ```js
-kintone.events.on('app.record.index.show', async () => {
-  const [body, status, headers] = await kintone.proxy(
-    'https://dog.ceo/api/breeds/image/random',
-    'GET',
-    {},
-    {}
-  )
+## kintone Plugin 製作
 
-  console.log(JSON.parse(body))
-})
-``` -->
+外掛與客製化不同的地方：
+
+1. 外掛需要先打包成 zip 才能匯入
+2. 能夠針對 APP 做設定（儲存資料）
+3. 重復使用
+
+---
+layout: image-right
+image: https://i.imgur.com/MDODKOP.png
+backgroundSize: contain
+---
+
+## plugin 架構範例
+
+不一定要是此架構，只要 `manifest.json` 指定檔案路徑即可。
+
+---
+layout: image-right
+image: https://i.imgur.com/uds60ha.png
+backgroundSize: contain
+---
+
+## manifest.json
+
+* 在 `desktop`、`mobile`、`config` 指定 JS 和 CSS 路徑。
+
+* `config` 代表外掛設定頁面的檔案。
+
+---
+
+## 打包 plugin
+
+使用 [@kintone/plugin-packer](https://www.npmjs.com/package/@kintone/plugin-packer) 打包 plugin。
+
+```shell
+{
+  "scripts": {
+    "package": "kintone-plugin-packer --ppk private.ppk"
+  }
+}
+```
+<v-click>
+參數：
+
+* `--ppk`：指令打包後的 ppk 檔，若沒指定將會產生一個 ppk 檔案。
+* `--out`：輸出的外掛檔名。
+* `--watch`：監聽模式。
+</v-click>
+
+<style>
+code {
+  font-size: 20px;
+}
+</style>
+
+---
+
+## plugin 可操作的方法
+　
+* **`kintone.plugin.app.setConfig(config, successCallback)`** - 儲存外掛設定
+* **`kintone.plugin.app.getConfig(pluginId)`** - 取得外掛設定
+* **`kintone.plugin.app.setProxyConfig(url, method, headers, data, successCallback)`** - 儲存 Proxy 設定
+* **`kintone.plugin.app.getProxyConfig(url, method)`** - 取得 Proxy 設定
+
+<br><br><br>
+
+<v-click>
+⚠️ setConfig 只能在外掛設定頁面調用
+</v-click>
+
+---
+
+## plugin 範例：設定欄位顏色流程
+　
+1. 讓使用者在「外掛設定頁面中」，選取要變更顏色的欄位。
+2. 外掛儲存欄位、顏色等資訊。
+3. 使用者回到 `index.detail` 畫面中。
+4. 使用 `getCnofig()` 取得欄位名稱、顏色等資料。
+5. 將顏色設定到欄位上。
+
+運用此方法，不用將欄位名稱寫死在 JS，可讓使用者自由指定欄位名稱。
 
 ---
 

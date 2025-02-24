@@ -1,8 +1,9 @@
 # Table of contents
 
-- 📝 **kintone JavaScript API 使用方式(事件)**
-- 🛠 **kintone REST API 呼叫方式**
-- 🛠 **kintone 呼叫外部 API**
+- 📝 **kintone Javascript API**
+- 🛠 **kintone Rest API**
+- 🛠 **kintone 外部串接（Proxy）**
+- 🛠 **kintone Plugin 製作**
 
 <br>
 <br>
