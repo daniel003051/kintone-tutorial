@@ -26,6 +26,42 @@ src: ./pages/intro.md
 
 ---
 
+## 注意事項
+　
+1. 不能使用 ESModule（ex: Vite）
+2. 連結需要是 `https`
+
+
+<div style="display: flex">
+  <img src="https://www.svgrepo.com/show/374146/typescript-official.svg" style="width: 100px" > 
+  <img src="https://www.svgrepo.com/show/374167/vite.svg" style="width: 100px" > 
+  <img src="https://www.svgrepo.com/show/452092/react.svg" style="width: 100px" > 
+  <img src="https://www.svgrepo.com/show/452130/vue.svg" style="width: 100px" > 
+  <img src="https://www.svgrepo.com/show/452156/angular.svg" style="width: 100px" > 
+</div>
+
+---
+
+## 如何上傳 JavaScript 檔案？
+
+應用程式齒輪 > 設定 > 透過JavaScript/CSS自訂 
+
+<img src="https://hackmd.io/_uploads/r1HxRHLuC.png" style="height: 80%">
+
+---
+
+## 快速建立專案
+
+終端機輸入：`pnpm create krsb`
+
+
+![](https://i.imgur.com/hepkCmr.png)
+
+> https://www.npmjs.com/package/create-krsb
+
+
+---
+
 ## kintone JavaScript API（事件）
 
 事件
@@ -293,6 +329,14 @@ code {
 
 ---
 
+## 作業 1 - 自動編碼
+　
+1. 應用程式需要建立一個 ''自動編碼欄位''
+2. 編碼內使用格式為 `YYYYMMDD-001`，再建一單變成 `YYYYMMDD-002`
+3. 每天的值都是從 `YYYYMMDD-001` 開始
+
+---
+
 ## kintone Plugin 製作
 
 外掛與客製化不同的地方：
@@ -399,10 +443,4 @@ code {
 * [iThome 鐵人賽 | kintone 娛樂城](https://ithelp.ithome.com.tw/2024ironman/signup/team/336)
 * [Qiita](https://qiita.com/search?q=kintone&sort=created)
 * [js-sdk](https://github.com/kintone/js-sdk)
-
----
-
-## 注意事項
-.
-1. 不能使用 ESModule（ex: Vite）
 
