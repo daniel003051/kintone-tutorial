@@ -347,13 +347,26 @@ code {
 
 ---
 layout: image-right
+image: https://i.imgur.com/3odGn0X.png
+backgroundSize: contain
+---
+
+## 如何安裝外掛
+
+右上角齒輪 > kintone系統管理 > 外掛程式 > 匯入
+
+---
+layout: image-right
 image: https://i.imgur.com/MDODKOP.png
 backgroundSize: contain
 ---
 
+
 ## plugin 架構範例
 
 不一定要是此架構，只要 `manifest.json` 指定檔案路徑即可。
+
+範例程式碼：[連結](https://github.com/daniel003051/kintone-plugin-temp)
 
 ---
 layout: image-right
@@ -376,7 +389,7 @@ backgroundSize: contain
 ```shell
 {
   "scripts": {
-    "package": "kintone-plugin-packer --ppk private.ppk"
+    "package": "kintone-plugin-packer ./app --ppk private.ppk"
   }
 }
 ```
@@ -396,12 +409,20 @@ code {
 
 ---
 
-## plugin 可操作的方法
+## 關於 .ppk 檔案
 　
-* **`kintone.plugin.app.setConfig(config, successCallback)`** - 儲存外掛設定
-* **`kintone.plugin.app.getConfig(pluginId)`** - 取得外掛設定
-* **`kintone.plugin.app.setProxyConfig(url, method, headers, data, successCallback)`** - 儲存 Proxy 設定
-* **`kintone.plugin.app.getProxyConfig(url, method)`** - 取得 Proxy 設定
+1. 外掛打包用的私鑰，須自行保管
+2. 每個外掛都有自己的 `.ppk`
+3. 若外掛要更新版本，需要有 `.ppk` 檔，不然會視為打包一個新的外掛，並產生新的 `.ppk`
+
+---
+
+## 外掛可操作的方法
+　
+* 儲存外掛設定：**`kintone.plugin.app.setConfig`**
+* 取得外掛設定：**`kintone.plugin.app.getConfig`**
+* 儲存 Proxy 設定：**`kintone.plugin.app.setProxyConfig`**
+* 取得 Proxy 設定：**`kintone.plugin.app.getProxyConfig`**
 
 <br><br><br>
 
@@ -411,15 +432,36 @@ code {
 
 ---
 
-## plugin 範例：設定欄位顏色流程
+## 外掛的設定畫面
 　
-1. 讓使用者在「外掛設定頁面中」，選取要變更顏色的欄位。
-2. 外掛儲存欄位、顏色等資訊。
-3. 使用者回到 `index.detail` 畫面中。
-4. 使用 `getCnofig()` 取得欄位名稱、顏色等資料。
-5. 將顏色設定到欄位上。
+指的是 `html/index.html`、`js/config.js`、`css/config.css`
 
-運用此方法，不用將欄位名稱寫死在 JS，可讓使用者自由指定欄位名稱。
+<img src="https://i.imgur.com/rhbWKYC.png" style="width: 100%">
+
+
+---
+
+## 取得應用程式欄位
+　
+1. 發送 API：[Get Form Fields](https://kintone.dev/en/docs/kintone/rest-api/apps/get-form-fields/)
+2. 設定至外掛 config：[kintone.plugin.app.setConfig](https://cybozu.dev/zh-tw/kintone/docs/js-api/plugins/set-config/)
+3. 於客製化頁面中取得外掛設定：[kintone.plugin.app.getConfig](https://cybozu.dev/zh-tw/kintone/docs/js-api/plugins/get-config/)
+
+運用此方法，不用將欄位名稱寫死在 `.JS`，可讓使用者自由指定欄位名稱。
+
+---
+
+## 隱藏 token 資訊
+<br>
+
+1. 預先在 [plugin proxy config](https://cybozu.dev/zh-tw/kintone/docs/js-api/plugins/get-config-for-proxy/) 中設定 headers 等資訊
+2. 在 customize.js 中調用 [Plugin Proxy Request](https://cybozu.dev/zh-tw/kintone/docs/js-api/plugins/kintone-plug-in-proxy/)
+<br><br>
+```mermaid
+graph LR;
+    A[設定 Plugin Proxy Config] --> B[調用 Plugin Proxy Request]
+```
+
 
 ---
 
